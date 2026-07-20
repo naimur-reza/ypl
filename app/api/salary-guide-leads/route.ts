@@ -6,9 +6,6 @@ import { requireAuth } from "@/lib/api-auth";
 import { parseExperienceYearBounds } from "@/lib/candidate-experience";
 
 export async function GET(req: NextRequest) {
-  const auth = await requireAuth(req);
-  if (auth instanceof NextResponse) return auth;
-
   await connectDB();
 
   const url = new URL(req.url);
@@ -210,6 +207,7 @@ export async function POST(req: NextRequest) {
       "expectedSalary",
       "availableFromDate",
       "location",
+      "nationality",
       "cvUrl",
     ];
 

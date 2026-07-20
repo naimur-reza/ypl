@@ -26,9 +26,9 @@ export function Navbar() {
           <Image
             src="/images/ypl-logo.png"
             alt="YPL"
-            width={100}
-            height={40}
-            className="h-10 w-auto"
+            width={200}
+            height={80}
+            className="h-16 w-auto"
           />
         </Link>
 

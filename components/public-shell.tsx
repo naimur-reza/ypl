@@ -14,7 +14,7 @@ export function PublicShell({
   footer: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isAdmin = pathname.startsWith("/dashboard");
+  const isAdmin = pathname.startsWith("/dashboard") || pathname.startsWith("/login") || pathname.startsWith("/(admin)");
 
   if (isAdmin) {
     return <>{children}</>;

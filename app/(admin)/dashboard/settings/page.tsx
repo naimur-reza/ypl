@@ -41,14 +41,14 @@ export default function SettingsPage() {
     defaultValues: initialData || {
       siteName: "YPL",
       email: "info@ypl.com",
-      phone: "+44 (0) 20 1234 5678",
-      address: "123 Business Street, London, EC1A 1BB, United Kingdom",
+      phone: "+880 1678-000335",
+      address: "Dhaka, Bangladesh",
       footerDescription: "Supporting the full talent lifecycle with expert recruitment and career management services.",
       socialLinks: [
-        { platform: "LinkedIn", url: "" },
-        { platform: "Twitter", url: "" },
-        { platform: "Facebook", url: "" },
-        { platform: "Instagram", url: "" },
+        { platform: "Facebook", url: "", icon: "Facebook" },
+        { platform: "LinkedIn", url: "", icon: "Linkedin" },
+        { platform: "Twitter", url: "", icon: "Twitter" },
+        { platform: "Instagram", url: "", icon: "Instagram" },
       ],
     },
     onSubmit: async ({ value }) => {

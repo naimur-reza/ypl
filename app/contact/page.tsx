@@ -37,18 +37,22 @@ const contactInfo = [
     title: "Visit Us",
     details: "Open our location on Google Maps",
     color: "bg-blue-500/10 text-blue-500",
+    href: "https://maps.app.goo.gl/Zt8ascB9rxNVMoEn6",
+    target: "_blank",
   },
   {
     icon: Phone,
     title: "Call Us",
     details: "01678000335 | 01678000337 | 01678000334",
     color: "bg-green-500/10 text-green-500",
+    href: "tel:+8801678000335",
   },
   {
     icon: Mail,
     title: "Email Us",
     details: "hr@yespvt.com",
     color: "bg-purple-500/10 text-purple-500",
+    href: "mailto:hr@yespvt.com",
   },
   {
     icon: Clock,
@@ -127,29 +131,39 @@ export default function ContactPage() {
       <section className="-mt-12 ">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {contactInfo.map((info, i) => (
-              <motion.div
-                key={info.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="group relative rounded-2xl border border-border bg-card/50 p-6 backdrop-blur-sm transition-all hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5"
-              >
-                <div
-                  className={cn(
-                    "flex h-12 w-12 items-center justify-center rounded-xl transition-transform group-hover:scale-110",
-                    info.color,
-                  )}
+            {contactInfo.map((info, i) => {
+              const Wrapper = info.href ? "a" : "div";
+              const wrapperProps = info.href
+                ? { href: info.href, target: info.target || "_self", rel: "noopener noreferrer" }
+                : {};
+              return (
+                <motion.div
+                  key={info.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  whileHover={{ y: -5 }}
                 >
-                  <info.icon className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 font-bold text-foreground">{info.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {info.details}
-                </p>
-              </motion.div>
-            ))}
+                  <Wrapper
+                    {...wrapperProps}
+                    className="group relative block rounded-2xl border border-border bg-card/50 p-6 backdrop-blur-sm transition-all hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5"
+                  >
+                    <div
+                      className={cn(
+                        "flex h-12 w-12 items-center justify-center rounded-xl transition-transform group-hover:scale-110",
+                        info.color,
+                      )}
+                    >
+                      <info.icon className="h-6 w-6" />
+                    </div>
+                    <h3 className="mt-4 font-bold text-foreground">{info.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {info.details}
+                    </p>
+                  </Wrapper>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>

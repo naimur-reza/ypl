@@ -52,7 +52,7 @@ export function JobCard({ job }: JobCardProps) {
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-muted/50 text-primary/70">
             <Building2 className="h-3.5 w-3.5" />
           </div>
-          <span className="font-medium">{job.company}</span>
+          <span className="font-medium">For Our Honorable Client</span>
         </div>
         <div className="flex items-center gap-2.5 text-sm text-muted-foreground/90">
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-muted/50 text-primary/70">

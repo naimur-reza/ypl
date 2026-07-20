@@ -1,0 +1,94 @@
+================================================================================
+          YPL WEBSITE UPDATES - WHAT WE FIXED
+================================================================================
+Date: July 19, 2026
+
+================================================================================
+ISSUES FIXED
+================================================================================
+
+1. POPUP NOT SHOWING IN ADMIN AREA
+   The "Join CV Bank" popup was appearing when admins log in.
+   FIXED: Popup now only shows on the public website, never in admin panels.
+
+2. DASHBOARD SHOWING WRONG CV COUNT
+   Dashboard showed 0 CVs even though there were 102.
+   FIXED: Dashboard now shows the correct number of CVs.
+
+3. DASHBOARD CARDS NOT WORKING
+   Clicking on dashboard cards (Total CVs, Applications, etc.) did nothing.
+   FIXED: All cards now link to their respective pages when clicked.
+
+4. APPLICATIONS PAGE CRASHING
+   The Applications page was crashing with a blank screen.
+   FIXED: Now shows a friendly error message with a "Retry" button.
+
+5. SOCIAL MEDIA LINKS NOT WORKING
+   Footer social media icons were not clickable or had wrong links.
+   FIXED: All social links now work and open in new tabs.
+   BONUS: Social links can now be edited from Dashboard → Settings.
+
+6. CONTACT CARDS NOT INTERACTIVE
+   "Visit Us", "Call Us", "Email Us" were just plain text.
+   FIXED: 
+   - Visit Us now opens Google Maps
+   - Call Us now prompts a phone call
+   - Email Us now opens email client
+
+7. "OTHERS" OPTION IN DROPDOWNS
+   Candidates had to select from fixed options only.
+   FIXED: All dropdowns now have an "Others" option where candidates 
+   can type their own value.
+
+8. BULK DOWNLOAD OF CANDIDATE PROFILES
+   Could only export one candidate at a time.
+   FIXED: Added "Download ZIP" option that exports all selected 
+   candidates as individual PDF files in a ZIP folder.
+
+9. JOB REQUIREMENTS ORGANIZED BY CATEGORY
+   Requirements were just a plain list.
+   FIXED: Requirements now organized into categories:
+   - Responsibilities
+   - Education
+   - Experience
+   - Professional Qualifications
+   - Technical Skills
+   - Soft Skills & Personal Attributes
+
+10. COMPANY NAME HIDDEN ON PUBLIC WEBSITE
+    The actual client company name was showing publicly.
+    FIXED: Public website now shows "For Our Honorable Client" 
+    instead of the real company name. Admin panel still shows 
+    the actual company name for internal tracking.
+
+11. JOB APPLICATIONS LINKED TO SPECIFIC JOBS
+    Applications were not properly linked to job postings.
+    FIXED: When a candidate applies to a job, the application 
+    is now automatically linked to that specific job posting.
+
+12. LOGO UPDATED
+    Old logo has been replaced with the official YPL Recruitment 
+    & HR Services logo (orange with thumbs-up icon).
+
+13. MORE OPTIONS IN ALL DROPDOWNS
+    Same as #7 - all dropdown fields now include "Others" option.
+
+14. NATIONALITY FIELD ADDED
+    New field added to the CV submission form for non-Bangladeshi 
+    candidates to enter their nationality.
+
+15. SOCIAL LINKS EDITABLE FROM SETTINGS
+    Footer social media links can now be managed from:
+    Dashboard → Settings → Social Links
+
+================================================================================
+SUMMARY
+================================================================================
+
+Total Issues Reported: 15
+Issues Fixed: 14
+Skipped: 1 (WhatsApp/Email integration - requires additional setup)
+
+All changes have been tested and deployed successfully.
+
+================================================================================

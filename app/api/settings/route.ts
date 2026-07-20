@@ -11,14 +11,15 @@ export async function GET(req: NextRequest) {
     // Upsert first setting if none exists
     setting = await Setting.create({
       siteName: "YPL",
-      email: "info@ypl.com",
-      phone: "+44 (0) 20 1234 5678",
-      address: "123 Business Street, London, EC1A 1BB, United Kingdom",
+      email: "hr@yespvt.com",
+      phone: "+880 1678-000335",
+      address: "Dhaka, Bangladesh",
       footerDescription: "Supporting the full talent lifecycle with expert recruitment and career management services.",
       socialLinks: [
-        { platform: "LinkedIn", url: "https://linkedin.com", icon: "Linkedin" },
-        { platform: "Twitter", url: "https://twitter.com", icon: "Twitter" },
-        { platform: "Facebook", url: "https://facebook.com", icon: "Facebook" },
+        { platform: "Facebook", url: "", icon: "Facebook" },
+        { platform: "LinkedIn", url: "", icon: "Linkedin" },
+        { platform: "Twitter", url: "", icon: "Twitter" },
+        { platform: "Instagram", url: "", icon: "Instagram" },
       ],
     });
   }

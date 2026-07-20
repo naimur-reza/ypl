@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SelectItem } from "@/components/ui/select";
+import { SelectWithOthers } from "@/components/ui/select-with-others";
 import { useAppForm } from "@/hooks/use-field-context";
 import {
   ACADEMIC_QUALIFICATIONS,
@@ -46,6 +47,7 @@ export function CandidateForm({
       expectedSalary: "",
       availableFromDate: "",
       location: "Dhaka",
+      nationality: "",
       cvUrl: "",
       status: "New",
     }) as Record<string, unknown>,
@@ -78,6 +80,9 @@ export function CandidateForm({
           </form.AppField>
           <form.AppField name="mobileNumber">
             {(field: any) => <field.Input label="Mobile Number" required />}
+          </form.AppField>
+          <form.AppField name="nationality">
+            {(field: any) => <field.Input label="Nationality" placeholder="Leave blank if Bangladeshi" />}
           </form.AppField>
           <form.AppField name="location">
             {(field: any) => (
@@ -116,24 +121,24 @@ export function CandidateForm({
 
           <form.AppField name="currentPosition">
             {(field: any) => (
-              <field.Select label="Position Level">
-                {POSITIONS.map((p) => (
-                  <SelectItem key={p} value={p}>
-                    {p}
-                  </SelectItem>
-                ))}
-              </field.Select>
+              <SelectWithOthers
+                label="Position Level"
+                value={field.state.value}
+                onValueChange={field.handleChange}
+                options={[...POSITIONS]}
+                othersPlaceholder="e.g. Senior Manager, Director"
+              />
             )}
           </form.AppField>
           <form.AppField name="industry">
             {(field: any) => (
-              <field.Select label="Industry Experience">
-                {INDUSTRIES.map((i) => (
-                  <SelectItem key={i} value={i}>
-                    {i}
-                  </SelectItem>
-                ))}
-              </field.Select>
+              <SelectWithOthers
+                label="Industry Experience"
+                value={field.state.value}
+                onValueChange={field.handleChange}
+                options={[...INDUSTRIES]}
+                othersPlaceholder="e.g. Pharmaceuticals, FMCG"
+              />
             )}
           </form.AppField>
 
@@ -159,13 +164,13 @@ export function CandidateForm({
 
           <form.AppField name="educationalQualification">
             {(field: any) => (
-              <field.Select label="Academic Qualification">
-                {ACADEMIC_QUALIFICATIONS.map((q) => (
-                  <SelectItem key={q} value={q}>
-                    {q}
-                  </SelectItem>
-                ))}
-              </field.Select>
+              <SelectWithOthers
+                label="Academic Qualification"
+                value={field.state.value}
+                onValueChange={field.handleChange}
+                options={[...ACADEMIC_QUALIFICATIONS]}
+                othersPlaceholder="e.g. BSc in Computer Science"
+              />
             )}
           </form.AppField>
           <form.AppField name="professionalQualification">

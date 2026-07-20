@@ -1,11 +1,18 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+export interface IRequirementCategory {
+  category: string;
+  content: string;
+  items: string[];
+}
+
 export interface ICareer extends Document {
   title: string;
   slug: string;
   company: string;
   description: string;
   requirements: string[];
+  requirementCategories: IRequirementCategory[];
   location: string;
   type: string;
   salary: string;
@@ -15,6 +22,15 @@ export interface ICareer extends Document {
   isActive: boolean;
 }
 
+const RequirementCategorySchema = new Schema<IRequirementCategory>(
+  {
+    category: { type: String, required: true },
+    content: { type: String, default: "" },
+    items: [{ type: String }],
+  },
+  { _id: false }
+);
+
 const CareerSchema = new Schema<ICareer>(
   {
     title: { type: String, required: true },
@@ -22,6 +38,7 @@ const CareerSchema = new Schema<ICareer>(
     company: { type: String, default: "" },
     description: { type: String, required: true },
     requirements: [{ type: String }],
+    requirementCategories: [RequirementCategorySchema],
     location: { type: String, required: true },
     type: { type: String, default: "Full-time" },
     salary: { type: String, default: "" },

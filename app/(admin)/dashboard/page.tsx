@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/dashboard/page-header";
 import {
@@ -99,16 +100,36 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function load() {
+      const opts: RequestInit = { credentials: "include" };
       try {
         const [applications, users, services, careers, leads] = await Promise.all([
-          fetch("/api/applications").then((r) => r.json()).catch(() => []),
-          fetch("/api/users").then((r) => r.json()).catch(() => []),
-          fetch("/api/services").then((r) => r.json()),
-          fetch("/api/careers").then((r) => r.json()),
-          fetch("/api/salary-guide-leads").then((r) => r.json()).catch(() => []),
+          fetch("/api/applications", opts).then(async (r) => {
+            if (!r.ok) { console.error("applications:", r.status); return []; }
+            return r.json();
+          }).catch(() => []),
+          fetch("/api/users", opts).then(async (r) => {
+            if (!r.ok) { console.error("users:", r.status); return []; }
+            return r.json();
+          }).catch(() => []),
+          fetch("/api/services", opts).then(async (r) => {
+            if (!r.ok) { console.error("services:", r.status); return []; }
+            return r.json();
+          }).catch(() => []),
+          fetch("/api/careers", opts).then(async (r) => {
+            if (!r.ok) { console.error("careers:", r.status); return []; }
+            return r.json();
+          }).catch(() => []),
+          fetch("/api/salary-guide-leads?limit=9999", opts).then(async (r) => {
+            if (!r.ok) { console.error("salary-guide-leads:", r.status); return []; }
+            return r.json();
+          }).catch(() => []),
         ]);
 
-        const safeLeads = Array.isArray(leads) ? (leads as CVLead[]) : [];
+        const safeLeads = Array.isArray(leads)
+          ? (leads as CVLead[])
+          : Array.isArray((leads as any)?.data)
+            ? ((leads as any).data as CVLead[])
+            : [];
         setCvs(safeLeads);
 
         setStats({
@@ -296,36 +317,42 @@ export default function DashboardPage() {
         value: totalCvs,
         icon: FileText,
         color: "text-blue-600 bg-blue-500/10",
+        href: "/dashboard/candidates",
       },
       {
         title: "Applications",
         value: stats?.applications ?? 0,
         icon: UserCheck,
         color: "text-violet-600 bg-violet-500/10",
+        href: "/dashboard/applications",
       },
       {
         title: "Careers",
         value: stats?.careers ?? 0,
         icon: GraduationCap,
         color: "text-blue-600 bg-blue-500/10",
+        href: "/dashboard/careers",
       },
       {
         title: "Services",
         value: stats?.services ?? 0,
         icon: Briefcase,
         color: "text-rose-600 bg-rose-500/10",
+        href: "/dashboard/services",
       },
       {
         title: "CVs (New)",
         value: newCount,
         icon: Sparkles,
         color: "text-cyan-600 bg-cyan-500/10",
+        href: "/dashboard/candidates",
       },
       {
         title: "Users",
         value: stats?.users ?? 0,
         icon: Users,
         color: "text-amber-600 bg-amber-500/10",
+        href: "/dashboard/users",
       },
     ];
   }, [cvCountsByStatus, stats, totalCvs]);
@@ -373,26 +400,27 @@ export default function DashboardPage() {
         <>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
             {cards.map((card) => (
-              <Card
-                key={card.title}
-                className="border-border/60 hover:shadow-lg hover:-translate-y-0.5 transition-all"
-              >
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    {card.title}
-                  </CardTitle>
-                  <div
-                    className={`flex h-9 w-9 items-center justify-center rounded-xl ${card.color}`}
-                  >
-                    <card.icon className="h-4 w-4" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold tracking-tight">
-                    {card.value}
-                  </div>
-                </CardContent>
-              </Card>
+              <Link key={card.title} href={card.href}>
+                <Card
+                  className="border-border/60 hover:shadow-lg hover:-translate-y-0.5 transition-all cursor-pointer"
+                >
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      {card.title}
+                    </CardTitle>
+                    <div
+                      className={`flex h-9 w-9 items-center justify-center rounded-xl ${card.color}`}
+                    >
+                      <card.icon className="h-4 w-4" />
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold tracking-tight">
+                      {card.value}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
 

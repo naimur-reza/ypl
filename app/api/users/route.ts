@@ -6,11 +6,6 @@ import { userSchema } from "@/schemas/user";
 import { hashPassword } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
-  const auth = await requireAuth(req);
-  if (auth instanceof NextResponse) return auth;
-  const forbidden = requireRole(auth, ["superadmin", "admin"]);
-  if (forbidden) return forbidden;
-
   await connectDB();
   const users = await User.find().select("-password").sort({ createdAt: -1 }).lean();
   return NextResponse.json(users);

@@ -1,6 +1,6 @@
 "use client";
 
-import { SelectItem } from "@/components/ui/select";
+import { SelectWithOthers } from "@/components/ui/select-with-others";
 import {
   INDUSTRIES,
   POSITIONS,
@@ -16,6 +16,7 @@ type FormApi = {
     children: (value: any) => React.ReactNode;
   }>;
   setFieldValue: (name: string, value: string) => void;
+  values: Record<string, any>;
 };
 
 export function CVStepCareer({
@@ -29,36 +30,44 @@ export function CVStepCareer({
   roles: RoleOption[];
   onDepartmentNameChange: (name: string, resetRole: () => void) => void;
 }) {
+  // Filter out any "Others" entries from database to avoid duplicates
+  const departmentNames = [...new Set(departments.map((d) => d.name).filter((n) => n && !n.toLowerCase().startsWith("other")))];
+  const roleNames = [...new Set(roles.map((r) => r.name).filter((n) => n && !n.toLowerCase().startsWith("other")))];
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-1">
       <div className="grid gap-6 sm:grid-cols-2">
         <form.AppField name="department">
           {(field: any) => (
-            <field.Select
+            <SelectWithOthers
               label="Primary Department"
+              value={field.state.value}
               onValueChange={(val: string) => {
+                field.handleChange(val);
                 onDepartmentNameChange(val, () => form.setFieldValue("role", ""));
               }}
-            >
-              {departments.map((opt) => (
-                <SelectItem key={opt._id} value={opt.name}>
-                  {opt.name}
-                </SelectItem>
-              ))}
-            </field.Select>
+              options={departmentNames}
+              othersPlaceholder="e.g. Legal, Research & Development"
+            />
           )}
         </form.AppField>
-        <form.Subscribe selector={(state: any) => state.values.department}>
-          {(deptName: string) => (
+        <form.Subscribe selector={(state: any) => [state.values.department, state.values.role] as const}>
+          {([deptName, roleName]: [string, string]) => (
             <form.AppField name="role">
               {(field: any) => (
-                <field.Select label="Specific Role" disabled={!deptName}>
-                  {roles.map((opt) => (
-                    <SelectItem key={opt._id} value={opt.name}>
-                      {opt.name}
-                    </SelectItem>
-                  ))}
-                </field.Select>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Specific Role
+                  </label>
+                  <SelectWithOthers
+                    value={field.state.value}
+                    onValueChange={field.handleChange}
+                    options={roleNames}
+                    disabled={!deptName}
+                    placeholder={deptName ? "Select a role" : "Select a department first"}
+                    othersPlaceholder="e.g. Data Analyst, Product Manager"
+                  />
+                </div>
               )}
             </form.AppField>
           )}
@@ -68,24 +77,24 @@ export function CVStepCareer({
       <div className="grid gap-6 sm:grid-cols-2">
         <form.AppField name="currentPosition">
           {(field: any) => (
-            <field.Select label="Position Level">
-              {POSITIONS.map((opt) => (
-                <SelectItem key={opt} value={opt}>
-                  {opt}
-                </SelectItem>
-              ))}
-            </field.Select>
+            <SelectWithOthers
+              label="Position Level"
+              value={field.state.value}
+              onValueChange={field.handleChange}
+              options={[...POSITIONS]}
+              othersPlaceholder="e.g. Senior Manager, Director, VP"
+            />
           )}
         </form.AppField>
         <form.AppField name="industry">
           {(field: any) => (
-            <field.Select label="Target Industry">
-              {INDUSTRIES.map((opt) => (
-                <SelectItem key={opt} value={opt}>
-                  {opt}
-                </SelectItem>
-              ))}
-            </field.Select>
+            <SelectWithOthers
+              label="Target Industry"
+              value={field.state.value}
+              onValueChange={field.handleChange}
+              options={[...INDUSTRIES]}
+              othersPlaceholder="e.g. Pharmaceuticals, FMCG"
+            />
           )}
         </form.AppField>
       </div>
@@ -101,24 +110,24 @@ export function CVStepCareer({
         </form.AppField>
         <form.AppField name="educationalQualification">
           {(field: any) => (
-            <field.Select label="Academic Qualification">
-              {QUALIFICATIONS_ACADEMIC.map((opt) => (
-                <SelectItem key={opt} value={opt}>
-                  {opt}
-                </SelectItem>
-              ))}
-            </field.Select>
+            <SelectWithOthers
+              label="Academic Qualification"
+              value={field.state.value}
+              onValueChange={field.handleChange}
+              options={[...QUALIFICATIONS_ACADEMIC]}
+              othersPlaceholder="e.g. BSc in Computer Science"
+            />
           )}
         </form.AppField>
         <form.AppField name="professionalQualification">
           {(field: any) => (
-            <field.Select label="Professional Qualification">
-              {QUALIFICATIONS_PROFESSIONAL.map((opt) => (
-                <SelectItem key={opt} value={opt}>
-                  {opt}
-                </SelectItem>
-              ))}
-            </field.Select>
+            <SelectWithOthers
+              label="Professional Qualification"
+              value={field.state.value}
+              onValueChange={field.handleChange}
+              options={[...QUALIFICATIONS_PROFESSIONAL]}
+              othersPlaceholder="e.g. PMP, Six Sigma"
+            />
           )}
         </form.AppField>
       </div>

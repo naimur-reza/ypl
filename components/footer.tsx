@@ -70,9 +70,9 @@ export async function Footer() {
               <Image
                 src="/images/ypl-logo.png"
                 alt="YPL"
-                width={120}
-                height={48}
-                className="h-10 w-auto brightness-0 invert"
+                width={160}
+                height={64}
+                className="h-12 w-auto"
               />
             </Link>
             <p className="text-sm leading-relaxed text-slate-400 max-w-xs">
@@ -80,22 +80,36 @@ export async function Footer() {
                 "Supporting the full talent lifecycle with expert recruitment and career management services."}
             </p>
             <div className="flex items-center gap-3">
-              {(settings?.socialLinks || []).map((link: any) => {
-                const Icon = socialIcons[link.platform];
-                if (!link.url || !Icon) return null;
-                return (
-                  <a
-                    key={link.platform}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener"
-                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900 border border-slate-800 text-slate-400 transition-all hover:bg-primary hover:text-white hover:border-primary hover:-translate-y-1"
-                    aria-label={link.platform}
-                  >
-                    <Icon className="h-4 w-4" />
-                  </a>
-                );
-              })}
+              {(() => {
+                // Default social links with actual URLs
+                const defaultLinks = [
+                  { platform: "Facebook", url: "https://www.facebook.com/yplrecruitment" },
+                  { platform: "LinkedIn", url: "https://www.linkedin.com/company/yplrecruitment" },
+                  { platform: "Twitter", url: "https://twitter.com/yplrecruitment" },
+                  { platform: "Instagram", url: "https://www.instagram.com/yplrecruitment" },
+                ];
+
+                // Use database links if they have URLs, otherwise use defaults
+                const linksToShow = settings?.socialLinks?.filter((l: any) => l.url) || 
+                  defaultLinks;
+
+                return linksToShow.map((link: any) => {
+                  const Icon = socialIcons[link.platform];
+                  if (!link.url || !Icon) return null;
+                  return (
+                    <a
+                      key={link.platform}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900 border border-slate-800 text-slate-400 transition-all hover:bg-primary hover:text-white hover:border-primary hover:-translate-y-1"
+                      aria-label={link.platform}
+                    >
+                      <Icon className="h-4 w-4" />
+                    </a>
+                  );
+                });
+              })()}
             </div>
           </div>
 

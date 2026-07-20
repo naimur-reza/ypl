@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { X, Loader2, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SelectItem } from "@/components/ui/select";
+import { SelectWithOthers } from "@/components/ui/select-with-others";
 import { useAppForm } from "@/hooks/use-field-context";
 
 /* ───────── Option lists (from CV Search Flowchart) ───────── */
@@ -220,67 +221,58 @@ export function SalaryGuideModal() {
 
                 <form.AppField name="currentPosition">
                   {(field) => (
-                    <field.Select label="Position / Level">
-                      {POSITIONS.map((opt) => (
-                        <SelectItem key={opt} value={opt}>
-                          {opt}
-                        </SelectItem>
-                      ))}
-                    </field.Select>
+                    <SelectWithOthers
+                      label="Position / Level"
+                      value={field.state.value}
+                      onValueChange={field.handleChange}
+                      options={POSITIONS}
+                      othersPlaceholder="e.g. Senior Manager, Director"
+                    />
                   )}
                 </form.AppField>
 
                 <form.AppField name="industry">
                   {(field) => (
-                    <field.Select label="Industry">
-                      {INDUSTRIES.map((opt) => (
-                        <SelectItem key={opt} value={opt}>
-                          {opt}
-                        </SelectItem>
-                      ))}
-                    </field.Select>
+                    <SelectWithOthers
+                      label="Industry"
+                      value={field.state.value}
+                      onValueChange={field.handleChange}
+                      options={INDUSTRIES}
+                      othersPlaceholder="e.g. Pharmaceuticals, FMCG"
+                    />
                   )}
                 </form.AppField>
 
                 <form.AppField name="educationalQualification">
                   {(field) => (
-                    <field.Select
+                    <SelectWithOthers
                       label="Educational Qualification"
-                
-                    >
-                      {QUALIFICATIONS_ACADEMIC.map((opt) => (
-                        <SelectItem key={opt} value={opt}>
-                          {opt}
-                        </SelectItem>
-                      ))}
-                    </field.Select>
+                      value={field.state.value}
+                      onValueChange={field.handleChange}
+                      options={QUALIFICATIONS_ACADEMIC}
+                      othersPlaceholder="e.g. BSc in Computer Science"
+                    />
                   )}
                 </form.AppField>
 
                 <form.AppField name="professionalQualification">
                   {(field) => (
-                    <field.Select
+                    <SelectWithOthers
                       label="Professional Qualification"
-              
-                    >
-                      {QUALIFICATIONS_PROFESSIONAL.map((opt) => (
-                        <SelectItem key={opt} value={opt}>
-                          {opt}
-                        </SelectItem>
-                      ))}
-                    </field.Select>
+                      value={field.state.value}
+                      onValueChange={field.handleChange}
+                      options={QUALIFICATIONS_PROFESSIONAL}
+                      othersPlaceholder="e.g. PMP, Six Sigma"
+                    />
                   )}
                 </form.AppField>
 
                 <form.AppField name="totalExperience">
                   {(field) => (
-                    <field.Select label="Total Experience">
-                      {EXPERIENCE_RANGES.map((opt) => (
-                        <SelectItem key={opt} value={opt}>
-                          {opt}
-                        </SelectItem>
-                      ))}
-                    </field.Select>
+                    <field.Input
+                      label="Total Experience"
+                      placeholder="e.g. 5 years or 3 years 6 months"
+                    />
                   )}
                 </form.AppField>
 

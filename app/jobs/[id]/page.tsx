@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { MapPin, Clock, Building2, Calendar, ArrowLeft, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SafeHtmlContent } from "@/components/ui/safe-html-content";
+import { richTextToPlainText } from "@/lib/rich-text";
 import { connectDB } from "@/lib/mongodb";
 import Career from "@/lib/models/career";
 
@@ -40,11 +41,9 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
             <h1 className="mt-4 text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">{career.title}</h1>
 
             <div className="mt-6 flex flex-wrap gap-6 text-primary-foreground/80">
-              {career.company && (
-                <div className="flex items-center gap-2">
-                  <Building2 className="h-5 w-5" /><span>{career.company}</span>
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                <Building2 className="h-5 w-5" /><span>For Our Honorable Client</span>
+              </div>
               <div className="flex items-center gap-2">
                 <MapPin className="h-5 w-5" /><span>{career.location}</span>
               </div>
@@ -73,9 +72,41 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
                   className="mt-4 text-muted-foreground"
                 />
 
-                {career.requirements && career.requirements.length > 0 && (
+                {career.requirementCategories && career.requirementCategories.length > 0 && career.requirementCategories.some((cat: any) => (cat.items?.length > 0) || cat.content) && (
                   <>
                     <h3 className="mt-8 text-lg font-semibold text-foreground">Requirements</h3>
+                    <div className="mt-4 space-y-6">
+                      {career.requirementCategories.map((cat: any, catIndex: number) => {
+                        if (!cat.items?.length && !cat.content) return null;
+                        return (
+                          <div key={catIndex}>
+                            <h4 className="text-sm font-semibold text-foreground mb-2">{cat.category}</h4>
+                            {cat.content && (
+                              <SafeHtmlContent
+                                content={cat.content}
+                                className="text-sm text-muted-foreground mb-2"
+                              />
+                            )}
+                            {cat.items?.length > 0 && (
+                              <ul className="space-y-2">
+                                {cat.items.map((req: string, index: number) => (
+                                  <li key={index} className="flex items-start gap-3">
+                                    <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                                    <span className="text-sm text-muted-foreground">{req}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+
+                {career.requirements && career.requirements.length > 0 && (
+                  <>
+                    <h3 className="mt-8 text-lg font-semibold text-foreground">Additional Requirements</h3>
                     <ul className="mt-4 space-y-3">
                       {career.requirements.map((req: string, index: number) => (
                         <li key={index} className="flex items-start gap-3">

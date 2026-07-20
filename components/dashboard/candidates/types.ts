@@ -16,6 +16,7 @@ export interface CandidateLead {
   expectedSalary: string;
   availableFromDate: string;
   location: string;
+  nationality?: string;
   cvUrl: string;
   status: string;
   createdAt: string;

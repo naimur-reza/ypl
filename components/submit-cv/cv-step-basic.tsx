@@ -6,6 +6,10 @@ import { LOCATIONS } from "@/lib/candidate-options";
 type FormApi = {
   AppField: React.ComponentType<{ name: string; children: (field: any) => React.ReactNode }>;
   AppForm: React.ComponentType<{ children: React.ReactNode }>;
+  Subscribe: React.ComponentType<{
+    selector: (state: any) => any;
+    children: (value: any) => React.ReactNode;
+  }>;
 };
 
 export function CVStepBasic({ form }: { form: FormApi }) {
@@ -32,6 +36,21 @@ export function CVStepBasic({ form }: { form: FormApi }) {
             </field.Select>
           )}
         </form.AppField>
+        <form.Subscribe selector={(state: any) => state.values.location}>
+          {(location: string) =>
+            location === "Outside Bangladesh" && (
+              <form.AppField name="nationality">
+                {(field: any) => (
+                  <field.Input
+                    label="Nationality"
+                    placeholder="Enter your nationality"
+                    required
+                  />
+                )}
+              </form.AppField>
+            )
+          }
+        </form.Subscribe>
       </div>
     </div>
   );

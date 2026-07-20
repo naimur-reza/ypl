@@ -1,6 +1,7 @@
 "use client";
 
 import jsPDF from "jspdf";
+import JSZip from "jszip";
 
 export type CandidateExportItem = {
   _id?: string;
@@ -186,5 +187,86 @@ export function exportCandidateProfileCardsPdf(candidates: CandidateExportItem[]
 
   footer(doc, exportDate);
   doc.save(`candidate-cv-profiles-${Date.now()}.pdf`);
+}
+
+export async function exportCandidateProfileCardsZip(candidates: CandidateExportItem[]) {
+  const zip = new JSZip();
+  const exportDate = new Date().toLocaleString();
+  const folder = zip.folder("candidate-profiles");
+
+  candidates.forEach((c, index) => {
+    const doc = new jsPDF({ unit: "pt", format: "a4" });
+
+    doc.setFillColor(...BRAND);
+    doc.rect(0, 0, doc.internal.pageSize.getWidth(), 54, "F");
+    doc.setTextColor(255);
+    doc.setFontSize(15);
+    doc.text("Candidate CV Bank", 14, 33);
+
+    doc.setTextColor(30);
+    doc.setFontSize(14);
+    doc.text(c.fullName || "Unnamed Candidate", 14, 80);
+    doc.setFontSize(10);
+
+    const rows: Array<[string, string]> = [
+      ["Email", c.email || "—"],
+      ["Mobile Number", c.mobileNumber || "—"],
+      ["Current Position", c.currentPosition || "—"],
+      ["Department", c.department || "—"],
+      ["Role", c.role || "—"],
+      ["Current Organization", c.currentOrganization || "—"],
+      ["Previous Organizations", c.previousOrganizations || "—"],
+      ["Industry", c.industry || "—"],
+      ["Educational Qualification", c.educationalQualification || "—"],
+      ["Professional Qualification", c.professionalQualification || "—"],
+      ["Total Experience", c.totalExperience || "—"],
+      ["Current Salary", c.currentSalary || "—"],
+      ["Expected Salary", c.expectedSalary || "—"],
+      ["Available From", c.availableFromDate || "—"],
+      ["Location", c.location || "—"],
+      ["CV Link", c.cvUrl || "No CV uploaded"],
+      ["Registration Date", c.createdAt || c.submittedAt || "—"],
+      ["CV Expiry", isExpired(c) ? "Outdated (6+ months)" : "Current"],
+    ];
+
+    let y = 100;
+    rows.forEach(([label, value]) => {
+      doc.setDrawColor(230);
+      doc.rect(14, y - 14, 170, 22);
+      doc.rect(184, y - 14, doc.internal.pageSize.getWidth() - 198, 22);
+      doc.setFontSize(9);
+      doc.setTextColor(80);
+      doc.text(label, 18, y);
+      doc.setTextColor(20);
+      doc.text(String(value), 188, y, { maxWidth: doc.internal.pageSize.getWidth() - 210 });
+      y += 24;
+    });
+
+    const missing = profileMissing(c);
+    doc.setTextColor(missing.length ? 180 : 34, missing.length ? 80 : 139, missing.length ? 80 : 34);
+    doc.setFontSize(10);
+    doc.text(
+      missing.length ? `Profile Warning: Missing ${missing.join(", ")}` : "Profile Completeness: Complete",
+      14,
+      y + 18,
+    );
+    doc.setTextColor(isExpired(c) ? 180 : 34, isExpired(c) ? 80 : 139, isExpired(c) ? 80 : 34);
+    doc.text(isExpired(c) ? "CV Status: Outdated (6+ months)" : "CV Status: Current", 14, y + 34);
+
+    footer(doc, exportDate);
+
+    const fileName = `${(c.fullName || "candidate").replace(/[^a-zA-Z0-9]/g, "_")}_${index + 1}.pdf`;
+    folder?.file(fileName, doc.output("blob"));
+  });
+
+  const content = await zip.generateAsync({ type: "blob" });
+  const url = URL.createObjectURL(content);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `candidate-profiles-${Date.now()}.zip`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 

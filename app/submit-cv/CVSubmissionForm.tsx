@@ -54,6 +54,7 @@ export function CVSubmissionForm() {
       expectedSalary: "",
       availableFromDate: "",
       location: "",
+      nationality: "",
       cvUrl: "",
     },
     onSubmit: async ({ value }) => {

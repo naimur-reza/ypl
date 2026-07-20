@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import {
   exportCandidateProfileCardsPdf,
+  exportCandidateProfileCardsZip,
   exportCandidateSummaryPdf,
 } from "@/lib/export/candidate-pdf";
 import { buildSalaryGuideLeadsListUrl } from "@/lib/salary-guide-leads-url";
@@ -442,13 +443,14 @@ export default function CandidatesPage() {
     [items, selectedIds],
   );
 
-  const handleExport = (format: "summary" | "cards") => {
+  const handleExport = async (format: "summary" | "cards" | "zip") => {
     const data = exportSource === "selected" ? selectedCandidates : items;
     if (!data.length) {
       toast.error("No candidates to export");
       return;
     }
     if (format === "summary") exportCandidateSummaryPdf(data);
+    else if (format === "zip") await exportCandidateProfileCardsZip(data);
     else exportCandidateProfileCardsPdf(data);
     setExportModeOpen(false);
   };
@@ -856,6 +858,7 @@ export default function CandidatesPage() {
                 ["Full Name", viewLead.fullName],
                 ["Email", viewLead.email],
                 ["Mobile", viewLead.mobileNumber],
+                ["Nationality", viewLead.nationality],
                 ["Department", viewLead.department],
                 ["Role", viewLead.role],
                 ["Level", viewLead.currentPosition],
@@ -948,6 +951,21 @@ export default function CandidatesPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const link = document.createElement("a");
+                      link.href = `/api/download-cv?url=${encodeURIComponent(previewCv.url)}&name=${encodeURIComponent(previewCv.candidateName)}`;
+                      link.download = `${previewCv.candidateName.replace(/[^a-zA-Z0-9 ]/g, "").trim().replace(/\s+/g, "_")}_CV`;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
+                  >
+                    <Download className="mr-1.5 h-4 w-4" />
+                    Download CV
+                  </Button>
                   <Button asChild variant="outline" size="sm">
                     <a
                       href={previewCv.url}
@@ -1003,7 +1021,11 @@ export default function CandidatesPage() {
               Summary Report
             </Button>
             <Button variant="outline" onClick={() => handleExport("cards")}>
-              Profile Cards
+              Profile Cards (Single PDF)
+            </Button>
+            <Button variant="outline" onClick={() => handleExport("zip")}>
+              <Download className="mr-2 h-4 w-4" />
+              Download ZIP (Individual PDFs)
             </Button>
           </div>
         </div>

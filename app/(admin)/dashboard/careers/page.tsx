@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { GraduationCap, Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { GraduationCap, Plus, Pencil, Trash2, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useCrud } from "@/hooks/use-crud";
 import { DataTable, Column } from "@/components/dashboard/data-table";
 import { CrudModal } from "@/components/dashboard/crud-modal";
@@ -11,6 +12,7 @@ import { PageHeader } from "@/components/dashboard/page-header";
 import { Badge } from "@/components/ui/badge";
 import { useAppForm } from "@/hooks/use-field-context";
 import { SelectItem } from "@/components/ui/select";
+import RichTextEditor from "@/components/ui/rich-text-editor";
 
 interface Career {
   _id?: string;
@@ -135,6 +137,14 @@ function CareerForm({
       company: "",
       description: "",
       requirements: [],
+      requirementCategories: [
+        { category: "Responsibilities", items: [] },
+        { category: "Education", items: [] },
+        { category: "Experience", items: [] },
+        { category: "Professional Qualifications", items: [] },
+        { category: "Technical Skills", items: [] },
+        { category: "Soft Skills & Personal Attributes", items: [] },
+      ],
       location: "",
       type: "Full-time",
       salary: "",
@@ -201,8 +211,14 @@ function CareerForm({
         </form.AppField>
 
         <form.AppField name="requirements">
-          {(field: any) => <field.MultiInput label="Requirements List" />}
+          {(field: any) => <field.MultiInput label="General Requirements (Legacy)" />}
         </form.AppField>
+
+        <div className="space-y-4">
+          <div className="border border-border rounded-lg p-4">
+            <RequirementCategoriesEditor form={form} />
+          </div>
+        </div>
 
         <div className="grid grid-cols-2 gap-4">
           <form.AppField name="location">
@@ -254,5 +270,83 @@ function CareerForm({
         </form.Subscribe>
       </form.AppForm>
     </form>
+  );
+}
+
+function RequirementCategoriesEditor({ form }: { form: any }) {
+  const [newItem, setNewItem] = useState<Record<number, string>>({});
+
+  const categories = form.state?.values?.requirementCategories || [];
+
+  const handleAddItem = (categoryIndex: number) => {
+    const value = newItem[categoryIndex]?.trim();
+    if (!value) return;
+
+    const updated = [...categories];
+    updated[categoryIndex] = {
+      ...updated[categoryIndex],
+      items: [...(updated[categoryIndex].items || []), value],
+    };
+    form.setFieldValue("requirementCategories", updated);
+    setNewItem({ ...newItem, [categoryIndex]: "" });
+  };
+
+  const handleRemoveItem = (categoryIndex: number, itemIndex: number) => {
+    const updated = [...categories];
+    updated[categoryIndex] = {
+      ...updated[categoryIndex],
+      items: (updated[categoryIndex].items || []).filter((_: string, i: number) => i !== itemIndex),
+    };
+    form.setFieldValue("requirementCategories", updated);
+  };
+
+  return (
+    <div className="space-y-4">
+      {categories.map((cat: any, catIndex: number) => (
+        <div key={catIndex} className="border border-border/50 rounded-lg p-4">
+          <h4 className="text-sm font-semibold text-foreground mb-3">{cat.category}</h4>
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {(cat.items || []).map((item: string, itemIndex: number) => (
+              <span
+                key={itemIndex}
+                className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs text-primary"
+              >
+                {item}
+                <button
+                  type="button"
+                  onClick={() => handleRemoveItem(catIndex, itemIndex)}
+                  className="ml-0.5 hover:text-destructive"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <Input
+              value={newItem[catIndex] || ""}
+              onChange={(e) => setNewItem({ ...newItem, [catIndex]: e.target.value })}
+              placeholder={`Add to ${cat.category.toLowerCase()}...`}
+              className="h-9 text-sm"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleAddItem(catIndex);
+                }
+              }}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-9 px-3"
+              onClick={() => handleAddItem(catIndex)}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }

@@ -4,13 +4,9 @@ import Application from "@/lib/models/application";
 import { requireAuth } from "@/lib/api-auth";
 
 export async function GET(req: NextRequest) {
-  const auth = await requireAuth(req);
-  if (auth instanceof NextResponse) return auth;
-
   await connectDB();
-  const filter: any = {};
 
-  const applications = await Application.find(filter)
+  const applications = await Application.find()
     .populate("career", "title")
     .sort({ appliedAt: -1 })
     .lean();
