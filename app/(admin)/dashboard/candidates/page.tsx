@@ -912,9 +912,9 @@ export default function CandidatesPage() {
                 </span>
               </div>
             {viewLead.cvUrl && (
-              <div className="pt-4 text-center">
+              <div className="pt-4 flex gap-2">
                 <Button
-                  className="w-full"
+                  className="flex-1"
                   onClick={() =>
                     setPreviewCv({
                       url: viewLead.cvUrl,
@@ -924,6 +924,22 @@ export default function CandidatesPage() {
                 >
                   <FileSpreadsheet className="mr-2 h-4 w-4" />
                   Preview Candidate CV
+                </Button>
+                <Button
+                  variant="destructive"
+                  className="flex-1"
+                  onClick={async () => {
+                    if (!viewLead._id) return;
+                    if (!confirm("Remove this candidate's CV? This cannot be undone.")) return;
+                    const ok = await update(viewLead._id, { cvUrl: "" } as any);
+                    if (ok) {
+                      setViewLead({ ...viewLead, cvUrl: "" });
+                      refetch();
+                    }
+                  }}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Remove CV
                 </Button>
               </div>
             )}
