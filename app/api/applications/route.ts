@@ -1,15 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Application from "@/lib/models/application";
+import Career from "@/lib/models/career";
 import { requireAuth } from "@/lib/api-auth";
 
 export async function GET(req: NextRequest) {
   await connectDB();
 
-  const applications = await Application.find()
-    .populate("career", "title")
-    .sort({ appliedAt: -1 })
-    .lean();
+  let applications;
+  try {
+    applications = await Application.find()
+      .populate("career", "title")
+      .sort({ appliedAt: -1 })
+      .lean();
+  } catch {
+    applications = await Application.find()
+      .sort({ appliedAt: -1 })
+      .lean();
+  }
   return NextResponse.json(applications);
 }
 
